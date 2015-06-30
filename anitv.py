@@ -15,7 +15,19 @@ import requests
 @example('.anitv love live')
 def anitv(bot, trigger):
     anime = trigger.group(2)
-    r = requests.get('http://anitv.foolz.us/json.php?controller=search&query=' + anime)
+    try:
+        r = requests.get(url='http://anitv.foolz.us/json.php?controller=search&query=' + anime, \
+                         timeout=(10.0, 4.0))
+    except requests.exceptions.ConnectionError:
+        bot.say('Couldn\'t connect to server.')
+    except requests.exceptions.ConnectTimeout:
+        bot.say('Connection timed out.')
+    except requests.exceptions.ReadTimeout:
+        bot.say('Server took too long to send data.')
+    try:
+        r.raise_for_status()
+    except requests.exceptions.HTTPError as e:
+        bot.say('HTTP error: ' + e.message)
     data = r.json()
     for result in data['results']:
         if 'error' in result:
