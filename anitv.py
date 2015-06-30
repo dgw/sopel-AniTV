@@ -18,6 +18,9 @@ def anitv(bot, trigger):
     r = requests.get('http://anitv.foolz.us/json.php?controller=search&query=' + anime)
     data = r.json()
     for result in data['results']:
+        if 'error' in result:
+            bot.say(result['error'])
+            return
         title = formatting.color(result['title'], 'red')
         episode = formatting.color(result['episode'], 'red')
         station = formatting.color(result['station'], 'red')
