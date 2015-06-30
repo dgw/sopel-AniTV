@@ -23,6 +23,16 @@ def anitv(bot, trigger):
         station = formatting.color(result['station'], 'red')
         station = station.replace('I think something messed up when you tried to copy that', 'Unknown station')
         timediff = datetime.fromtimestamp(result['unixtime']) - datetime.today()
-        countdown = formatting.color(str(timediff), 'red')
+        days = timediff.days
+        hours, remainder = divmod(timediff.seconds, 3600)
+        minutes, seconds = divmod(remainder, 60)
+        g_days = 'day' if days == 1 else 'days'
+        g_hours = 'hour' if hours == 1 else 'hours'
+        g_minutes = 'minute' if minutes == 1 else 'minutes'
+        g_seconds = 'second' if seconds == 1 else 'seconds'
+        countdown = '%d %s ' % (days, g_days) if days else ''
+        countdown += '%d %s ' % (hours, g_hours) if hours else ''
+        countdown += '%d %s ' % (minutes, g_minutes) if minutes else ''
+        countdown += '%d %s' % (seconds, g_seconds) if seconds else ''
         bot.say('%s episode %s airs on %s in %s' % (title, episode, station, countdown))
 
