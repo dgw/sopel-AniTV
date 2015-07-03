@@ -8,13 +8,20 @@ from willie.module import commands, example
 from willie import formatting
 from willie.tools import Identifier
 from datetime import datetime
-import requests
+import re, requests
+
+argre = re.compile('\s*\-(\d)\s*')
 
 @commands('ani', 'anitv')
 @example('.ani love lab')
 @example('.anitv love live')
 def anitv(bot, trigger):
+    num = 1
     anime = trigger.group(2)
+    arg = argre.search(anime)
+    if arg:
+        num = int(arg.group(1))
+        anime = anime[:arg.start()] + anime[arg.end():]
     try:
         r = requests.get(url='http://anitv.foolz.us/json.php?controller=search&query=' + anime, \
                          timeout=(10.0, 4.0))
@@ -29,6 +36,7 @@ def anitv(bot, trigger):
     except requests.exceptions.HTTPError as e:
         bot.say('HTTP error: ' + e.message)
     data = r.json()
+    sent = 0
     for result in data['results']:
         if 'error' in result:
             bot.say(result['error'])
@@ -50,4 +58,7 @@ def anitv(bot, trigger):
         countdown += '%d %s ' % (minutes, g_minutes) if minutes else ''
         countdown += '%d %s' % (seconds, g_seconds) if seconds else ''
         bot.say('%s episode %s airs on %s in %s' % (title, episode, station, countdown))
+        sent += 1
+        if sent >= num:
+            break
 
