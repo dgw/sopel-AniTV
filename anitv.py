@@ -42,7 +42,8 @@ def anitv(bot, trigger):
             bot.say(result['error'])
             return
         title = formatting.color(result['title'], 'red')
-        episode = formatting.color(result['episode'], 'red')
+        episode = formatting.color(result['episode'], 'red') if result['episode'] else None
+        g_episode = ( ' episode %s' % episode ) if episode else ''
         station = formatting.color(result['station'], 'red')
         station = station.replace('I think something messed up when you tried to copy that', 'Unknown station')
         timediff = datetime.fromtimestamp(result['unixtime']) - datetime.today()
@@ -57,7 +58,7 @@ def anitv(bot, trigger):
         countdown += '%d %s ' % (hours, g_hours) if hours else ''
         countdown += '%d %s ' % (minutes, g_minutes) if minutes else ''
         countdown += '%d %s' % (seconds, g_seconds) if seconds else ''
-        bot.say('%s episode %s airs on %s in %s' % (title, episode, station, countdown))
+        bot.say('%s%s airs on %s in %s' % (title, g_episode, station, countdown))
         sent += 1
         if sent >= num:
             break
