@@ -18,6 +18,9 @@ argre = re.compile('\s*\-(\d)\s*')
 def anitv(bot, trigger):
     num = 1
     anime = trigger.group(2)
+    if not anime:
+        bot.say('No anime specified.')
+        return
     arg = argre.search(anime)
     if arg:
         num = int(arg.group(1))
