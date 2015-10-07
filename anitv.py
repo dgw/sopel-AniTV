@@ -46,24 +46,39 @@ def anitv(bot, trigger):
         if 'error' in result:
             bot.say(result['error'])
             return
-        title = formatting.color(result['title'], 'red')
-        episode = formatting.color(result['episode'], 'red') if result['episode'] else None
-        g_episode = (" episode %s" % episode) if episode else ""
-        station = formatting.color(result['station'], 'red')
-        station = station.replace('I think something messed up when you tried to copy that', 'Unknown station')
-        timediff = datetime.fromtimestamp(result['unixtime']) - datetime.today()
-        days = timediff.days
-        hours, remainder = divmod(timediff.seconds, 3600)
-        minutes, seconds = divmod(remainder, 60)
-        g_days = "day" if days == 1 else "days"
-        g_hours = "hour" if hours == 1 else "hours"
-        g_minutes = "minute" if minutes == 1 else "minutes"
-        g_seconds = "second" if seconds == 1 else "seconds"
-        countdown = "%d %s " % (days, g_days) if days else ""
-        countdown += "%d %s " % (hours, g_hours) if hours else ""
-        countdown += "%d %s " % (minutes, g_minutes) if minutes else ""
-        countdown += "%d %s" % (seconds, g_seconds) if seconds else ""
-        bot.say("%s%s airs on %s in %s" % (title, g_episode, station, countdown))
+        result = format_result(result)
+        bot.say("%s%s airs on %s in %s" % (result['title'], result['episode'], result['station'], result['countdown']))
         sent += 1
         if sent >= num:
             break
+
+
+def format_result(result):
+    fixed = {
+        'title':   result['title'] or 'Unknown title',
+        'episode': result['episode'] or "",
+        'station': result['station'] or 'Unknown station'
+    }
+    for k in fixed:
+        if fixed[k]:
+            fixed[k] = formatting.color(fixed[k], 'red')
+    fixed['station'].replace('I think something messed up when you tried to copy that', 'Unknown station')
+    if fixed['episode']:
+        fixed['episode'] = " episode %s" % formatting.color(fixed['episode'], 'red')
+    fixed['countdown'] = format_countdown(datetime.fromtimestamp(result['unixtime']) - datetime.today())
+    return fixed
+
+
+def format_countdown(timediff):
+    days = timediff.days
+    hours, remainder = divmod(timediff.seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    g_days = "day" if days == 1 else "days"
+    g_hours = "hour" if hours == 1 else "hours"
+    g_minutes = "minute" if minutes == 1 else "minutes"
+    g_seconds = "second" if seconds == 1 else "seconds"
+    countdown = "%d %s " % (days, g_days) if days else ""
+    countdown += "%d %s " % (hours, g_hours) if hours else ""
+    countdown += "%d %s " % (minutes, g_minutes) if minutes else ""
+    countdown += "%d %s" % (seconds, g_seconds) if seconds else ""
+    return countdown
