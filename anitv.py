@@ -40,6 +40,7 @@ def anitv(bot, trigger):
         r.raise_for_status()
     except requests.exceptions.HTTPError as e:
         bot.say("HTTP error: " + e.message)
+        return
     data = r.json()
     sent = 0
     for result in data['results']:
