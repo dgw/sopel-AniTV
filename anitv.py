@@ -10,7 +10,7 @@ from datetime import datetime
 import re
 import requests
 
-argre = re.compile('\s*\-(\d)\s*')
+argre = re.compile('\s*\-(\d+)\s*')
 
 
 @commands('ani', 'anitv')
@@ -24,6 +24,8 @@ def anitv(bot, trigger):
     arg = argre.search(anime)
     if arg:
         num = int(arg.group(1))
+        if num > 5:
+            num = 5
         anime = anime[:arg.start()] + anime[arg.end():]
     try:
         r = requests.get(url='http://anitv.foolz.us/json.php?controller=search&query=' + anime, timeout=(10.0, 4.0))
