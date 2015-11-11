@@ -16,19 +16,14 @@ argre = re.compile('\s*\-(\d+)\s*')
 @commands('ani', 'anitv')
 @example(".ani love lab")
 def anitv(bot, trigger):
-    num = 1
     anime = trigger.group(2)
     if not anime:
         bot.say("No anime specified.")
         return
-    arg = argre.search(anime)
-    if arg:
-        num = int(arg.group(1))
-        if num > 5:
-            num = 5
-        anime = anime[:arg.start()] + anime[arg.end():]
+    args = parse_args(anime)
     try:
-        r = requests.get(url='http://anitv.foolz.us/json.php?controller=search&query=' + anime, timeout=(10.0, 4.0))
+        r = requests.get(url='http://anitv.foolz.us/json.php?controller=search&query=' + args['title'],
+                         timeout=(10.0, 4.0))
     except requests.exceptions.ConnectTimeout:
         bot.say("Connection timed out.")
         return
@@ -52,8 +47,23 @@ def anitv(bot, trigger):
         result = format_result(result)
         bot.say("%s%s airs on %s in %s" % (result['title'], result['episode'], result['station'], result['countdown']))
         sent += 1
-        if sent >= num:
+        if sent >= args['num']:
             break
+
+
+def parse_args(args):
+    parsed = {
+        'title': args,
+        'num':   1,
+    }
+    arg = argre.search(args)
+    if arg:
+        num = int(arg.group(1))
+        if num > 5:
+            num = 5
+        parsed['num'] = num
+        parsed['title'] = args[:arg.start()] + args[arg.end():]
+    return parsed
 
 
 def format_result(result):
