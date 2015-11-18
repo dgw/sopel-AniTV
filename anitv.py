@@ -10,7 +10,9 @@ from datetime import datetime
 import re
 import requests
 
-argre = re.compile('\s*\-(\d+)\s*')
+argres = {
+    'num':  re.compile('\s*\-(\d+)\s*'),
+}
 
 
 @commands('ani', 'anitv')
@@ -53,16 +55,20 @@ def anitv(bot, trigger):
 
 def parse_args(args):
     parsed = {
-        'title': args,
-        'num':   1,
+        'num':  1,
     }
-    arg = argre.search(args)
-    if arg:
-        num = int(arg.group(1))
-        if num > 5:
-            num = 5
-        parsed['num'] = num
-        parsed['title'] = args[:arg.start()] + args[arg.end():]
+    argd = {}
+    for expr in argres:
+        match = argres[expr].search(args)
+        if match:
+            argd[expr] = match
+            args = args[:match.start()] + args[match.end():]  # remove parsed args from input
+    for arg in argd:
+        parsed[arg] = argd[arg].group(1)
+    parsed['title'] = args  # what's left of the input after parsing should be the title
+    parsed['num'] = int(parsed['num'])  # I hate special cases, but how else to do this?
+    if parsed['num'] > 5:
+        parsed['num'] = 5  # clamp max
     return parsed
 
 
