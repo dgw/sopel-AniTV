@@ -11,6 +11,7 @@ import re
 import requests
 
 argres = {
+    'chan': re.compile('\s*\-(?:ch(?:an|l)?|sta?)\s+(\w+)\s*'),
     'num':  re.compile('\s*\-(\d+)\s*'),
 }
 
@@ -46,6 +47,9 @@ def anitv(bot, trigger):
         if 'error' in result:
             bot.say(result['error'])
             return
+        if args['chan']:
+            if args['chan'].lower() not in result['station'].lower():
+                continue
         result = format_result(result)
         bot.say("%s%s airs on %s in %s" % (result['title'], result['episode'], result['station'], result['countdown']))
         sent += 1
@@ -55,6 +59,7 @@ def anitv(bot, trigger):
 
 def parse_args(args):
     parsed = {
+        'chan': '',
         'num':  1,
     }
     argd = {}
