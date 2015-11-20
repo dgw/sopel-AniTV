@@ -42,7 +42,7 @@ def anitv(bot, trigger):
         bot.say("HTTP error: " + e.message)
         return
     data = r.json()
-    sent = 0
+    queue = []
     for result in data['results']:
         if 'error' in result:
             bot.say(result['error'])
@@ -50,11 +50,11 @@ def anitv(bot, trigger):
         if args['chan']:
             if args['chan'].lower() not in result['station'].lower():
                 continue
-        result = format_result(result)
-        bot.say("%s%s airs on %s in %s" % (result['title'], result['episode'], result['station'], result['countdown']))
-        sent += 1
-        if sent >= args['num']:
+        queue.append(format_result(result))
+        if len(queue) >= args['num']:
             break
+    for result in queue:
+        bot.say("%s%s airs on %s in %s" % (result['title'], result['episode'], result['station'], result['countdown']))
 
 
 def parse_args(args):
