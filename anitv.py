@@ -53,6 +53,9 @@ def anitv(bot, trigger):
         queue.append(format_result(result))
         if len(queue) >= args['num']:
             break
+    if not len(queue):  # empty results
+        bot.say("No results matching search criteria.")
+        return
     for result in queue:
         bot.say("%s%s airs on %s in %s" % (result['title'], result['episode'], result['station'], result['countdown']))
 
