@@ -13,6 +13,7 @@ import requests
 argres = {
     'chan': re.compile('\s*\-(?:ch(?:an|l)?|sta?)\s+(\w+)\s*'),
     'num':  re.compile('\s*\-(\d+)\s*'),
+    'rev':  re.compile('\s*\-(r)\s*'),
 }
 
 
@@ -56,6 +57,8 @@ def anitv(bot, trigger):
     if not len(queue):  # empty results
         bot.say("No results matching search criteria.")
         return
+    if args['rev']:
+        queue.reverse()
     for result in queue:
         bot.say("%s%s airs on %s in %s" % (result['title'], result['episode'], result['station'], result['countdown']))
 
@@ -64,6 +67,7 @@ def parse_args(args):
     parsed = {
         'chan': '',
         'num':  1,
+        'rev':  False,
     }
     argd = {}
     for expr in argres:
