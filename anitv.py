@@ -10,11 +10,18 @@ from datetime import datetime
 import re
 import requests
 
-argres = {
-    'chan': re.compile('\s*\-(?:ch(?:an|l)?|sta?)\s+(\w+)\s*'),
-    'num':  re.compile('\s*\-(\d+)\s*'),
-    'rev':  re.compile('\s*\-(r)\s*'),
+arg_regexen = {
+    'chan': '\-(?:ch(?:an|l)?|sta?)\s+(\w+)',
+    'num':  '\-(\d+)',
+    'rev':  '\-(r)',
 }
+
+
+def setup(bot):
+    global arg_regexen
+
+    for regex in arg_regexen:
+        arg_regexen[regex] = re.compile('\s*%s\s*' % arg_regexen[regex])
 
 
 @commands('ani', 'anitv')
@@ -70,10 +77,10 @@ def parse_args(args):
         'rev':  False,
     }
     argd = {}
-    for expr in argres:
-        match = argres[expr].search(args)
+    for regex in arg_regexen:
+        match = arg_regexen[regex].search(args)
         if match:
-            argd[expr] = match
+            argd[regex] = match
             args = args[:match.start()] + args[match.end():]  # remove parsed args from input
     for arg in argd:
         parsed[arg] = argd[arg].group(1)
