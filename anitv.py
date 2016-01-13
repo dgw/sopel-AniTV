@@ -101,7 +101,7 @@ def format_result(result):
         if fixed[k]:
             fixed[k] = formatting.color(fixed[k], 'red')
     fixed['station'] = fixed['station'].replace('I think something messed up when you tried to copy that',
-                                                'Unknown station')
+                                                'Ultra! A&G+')
     if fixed['episode']:
         fixed['episode'] = " episode %s" % formatting.color(fixed['episode'], 'red')
     fixed['countdown'] = format_countdown(datetime.fromtimestamp(result['unixtime']) - datetime.today())
