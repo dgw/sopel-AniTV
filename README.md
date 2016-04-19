@@ -1,12 +1,12 @@
-# willie-AniTV
-AniTV module for willie to get showtimes and channels from the AniTV API.
+# sopel-AniTV
+AniTV module for sopel to get showtimes and channels from the AniTV API.
 
 ## Requirements
 The AniTV module relies on the following Python modules:
 
-* `datetime`
-* `re` (already required by willie)
-* `requests`
+* `datetime` (standard Python library)
+* `re` (standard Python library)
+* `requests` (should be in standard Python library)
 
 ## Usage
 Commands & arguments:

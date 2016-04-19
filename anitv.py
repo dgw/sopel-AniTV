@@ -1,11 +1,11 @@
 """
-anitv.py - Port of a Java module for PircBotx
-Copyright 2015, dgw
+anitv.py - Clone of a Java module for PircBotx
+Copyright 2015-2016, dgw
 Licensed under the GPL v3.0 or later
 """
 
-from willie.module import commands, example
-from willie import formatting
+from sopel.module import commands, example
+from sopel import formatting
 from datetime import datetime
 import re
 import requests
