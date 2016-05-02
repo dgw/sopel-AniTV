@@ -21,7 +21,7 @@ def setup(bot):
     global arg_regexen
 
     for regex in arg_regexen:
-        arg_regexen[regex] = re.compile('%s(?:\s+|$)' % arg_regexen[regex])
+        arg_regexen[regex] = re.compile('(?:^|\s+)%s' % arg_regexen[regex])
 
 
 @commands('ani', 'anitv')
