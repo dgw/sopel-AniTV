@@ -12,6 +12,7 @@ import requests
 
 arg_regexen = {
     'chan': '\-(?:ch(?:an|l)?|sta?)\s+(\w+)',
+    'ep':   '\-ep\s+(\d+)',
     'num':  '\-(\d+)',
     'rev':  '\-(r)',
 }
@@ -58,6 +59,9 @@ def anitv(bot, trigger):
         if args['chan']:
             if args['chan'].lower() not in result['station'].lower():
                 continue
+        if args['ep']:
+            if args['ep'] != result['episode']:
+                continue
         queue.append(format_result(result))
         if len(queue) >= args['num']:
             break
@@ -73,6 +77,7 @@ def anitv(bot, trigger):
 def parse_args(args):
     parsed = {
         'chan': '',
+        'ep':   None,
         'num':  1,
         'rev':  False,
     }
