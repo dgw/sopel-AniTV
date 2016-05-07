@@ -5,11 +5,13 @@ Licensed under the GPL v3.0 or later
 """
 
 from sopel.module import commands, example
+from sopel.config.types import StaticSection, ValidatedAttribute
 from sopel import formatting
 from datetime import datetime
 import re
 import requests
 
+api_url = None  # defined from config during module setup
 arg_regexen = {
     'chan': '\-(?:ch(?:an|l)?|sta?)\s+(\w+)',
     'ep':   '\-ep\s+(\d+)',
@@ -18,8 +20,33 @@ arg_regexen = {
 }
 
 
+class AniTVSection(StaticSection):
+    server = ValidatedAttribute('server', default='anitv.foolz.us')
+    api_key = ValidatedAttribute('api_key', default=None)
+
+
+def configure(config):
+    config.define_section('anitv', AniTVSection, validate=False)
+    config.anitv.configure_setting('server', 'AniTV server')
+    config.anitv.configure_setting('api_key', 'API Key (if required by chosen server)')
+
+
 def setup(bot):
-    global arg_regexen
+    global api_url, arg_regexen
+
+    bot.config.define_section('anitv', AniTVSection)
+
+    if not bot.config.anitv.server:
+        api_url = 'http://anitv.foolz.us'  # define default in code because the default API requires no key
+    else:
+        server = bot.config.anitv.server
+        api_url = server if (server.startswith('http://') or server.startswith('https://')) else 'http://' + server
+    if not api_url.endswith('/'):  # in case of overzealous configuration
+        api_url += '/'
+    api_url += 'json.php?'
+    if bot.config.anitv.api_key:
+        api_url += 'key=' + bot.config.anitv.api_key + '&'
+    api_url += 'controller=search&query=%s'  # placeholder will be expanded each time command is called
 
     for regex in arg_regexen:
         arg_regexen[regex] = re.compile('(?:^|\s+)%s' % arg_regexen[regex])
@@ -34,8 +61,7 @@ def anitv(bot, trigger):
         return
     args = parse_args(anime)
     try:
-        r = requests.get(url='http://anitv.foolz.us/json.php?controller=search&query=' + args['title'],
-                         timeout=(10.0, 4.0))
+        r = requests.get(url=api_url % args['title'], timeout=(10.0, 4.0))
     except requests.exceptions.ConnectTimeout:
         bot.say("Connection timed out.")
         return
