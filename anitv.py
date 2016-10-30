@@ -52,7 +52,7 @@ def setup(bot):
         arg_regexen[regex] = re.compile('(?:^|\s+)%s' % arg_regexen[regex])
 
 
-@commands('ani', 'anitv')
+@commands('ani', 'anitv', 'airs', 'airing')
 @example(".ani love lab")
 def anitv(bot, trigger):
     anime = trigger.group(2)
