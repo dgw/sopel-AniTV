@@ -5,6 +5,7 @@ Licensed under the GPL v3.0 or later
 """
 
 from sopel.module import commands, example
+from sopel.config import ConfigurationError
 from sopel.config.types import StaticSection, ValidatedAttribute
 from sopel import formatting
 from datetime import datetime
@@ -21,7 +22,7 @@ arg_regexen = {
 
 
 class AniTVSection(StaticSection):
-    server = ValidatedAttribute('server', default='anitv.foolz.us')
+    server = ValidatedAttribute('server', default=None)
     api_key = ValidatedAttribute('api_key', default=None)
 
 
@@ -37,7 +38,7 @@ def setup(bot):
     bot.config.define_section('anitv', AniTVSection)
 
     if not bot.config.anitv.server:
-        api_url = 'http://anitv.foolz.us'  # define default in code because the default API requires no key
+        raise ConfigurationError("anitv server must be specified!");
     else:
         server = bot.config.anitv.server
         api_url = server if (server.startswith('http://') or server.startswith('https://')) else 'http://' + server

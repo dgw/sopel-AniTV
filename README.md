@@ -8,6 +8,15 @@ The AniTV module relies on the following Python modules:
 * `re` (standard Python library)
 * `requests` (should be in standard Python library)
 
+## Configuration
+The AniTV module requires configuration before it will function. The required configuration consists of:
+
+* The AniTV server to use
+  * (optional) The API key needed to connect to the AniTV server, if required by the server
+
+A default server was included with this module previously, but it shut down in October 2016. The only
+known replacement is http://tv.yuuki-chan.xyz/, which requires requesting an API key before use.
+
 ## Usage
 Commands & arguments:
 
