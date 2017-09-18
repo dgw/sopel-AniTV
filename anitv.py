@@ -88,7 +88,7 @@ def anitv(bot, trigger):
             bot.say(result['error'])
             return
         if args['chan']:
-            if args['chan'].lower() not in result['station'].lower():
+            if not result['station'] or args['chan'].lower() not in result['station'].lower():
                 continue
         if args['ep']:
             if args['ep'] != result['episode']:
