@@ -9,6 +9,7 @@ from sopel.config import ConfigurationError
 from sopel.config.types import StaticSection, ValidatedAttribute
 from sopel import formatting
 from datetime import datetime
+import random
 import re
 import requests
 
@@ -61,6 +62,14 @@ def anitv(bot, trigger):
         bot.say("No anime specified.")
         return
     args = parse_args(anime)
+    if args['title'] == bot.nick:  # Easter egg
+        result = {}
+        result['title'] = bot.nick
+        result['episode'] = str(random.randint(1, 13))
+        result['station'] = random.choice([bot.nick + "TV", trigger.sender])
+        res = format_result(result)
+        bot.say("%s%s is %s on %s." % (res['title'], res['episode'], res['countdown'], res['station']))
+        return
     try:
         r = requests.get(url=api_url % args['title'], timeout=(10.0, 4.0))
     except requests.exceptions.ConnectTimeout:
@@ -140,7 +149,10 @@ def format_result(result):
                                                 'Ultra! A&G+')
     if fixed['episode']:
         fixed['episode'] = " episode %s" % formatting.color(fixed['episode'], 'red')
-    fixed['countdown'] = format_countdown(datetime.fromtimestamp(result['unixtime']) - datetime.today())
+    if 'unixtime' in result:
+        fixed['countdown'] = format_countdown(datetime.fromtimestamp(result['unixtime']) - datetime.today())
+    else:
+        fixed['countdown'] = formatting.color("currently airing", 'red')
     return fixed
 
 
