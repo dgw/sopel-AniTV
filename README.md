@@ -14,8 +14,13 @@ The AniTV module requires configuration before it will function. The required co
 * The AniTV server to use
   * (optional) The API key needed to connect to the AniTV server, if required by the server
 
-A default server was included with this module previously, but it shut down in October 2016. The only
-known replacement is http://tv.yuuki-chan.xyz/, which requires requesting an API key before use.
+### Known servers
+Known active servers as of September 2017:
+
+* http://tv.yuuki-chan.xyz/ (requires requesting an API key)
+* http://tv.nalapl3.xyz/ (requires requesting an API key)
+
+(A default, public server was included with this module previously, but it shut down in October 2016.)
 
 ## Usage
 Commands & arguments:
