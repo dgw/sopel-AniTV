@@ -1,12 +1,12 @@
 """
 anitv.py - Clone of a Java module for PircBotx
-Copyright 2015-2016, dgw
+Copyright 2015-2019, dgw
 Licensed under the GPL v3.0 or later
 """
 
 from sopel.module import commands, example
 from sopel.config import ConfigurationError
-from sopel.config.types import StaticSection, ValidatedAttribute
+from sopel.config.types import ListAttribute, StaticSection, ValidatedAttribute
 from sopel import formatting
 from datetime import datetime
 import random
@@ -25,6 +25,7 @@ arg_regexen = {
 class AniTVSection(StaticSection):
     server = ValidatedAttribute('server', default=None)
     api_key = ValidatedAttribute('api_key', default=None)
+    easter_egg_titles = ListAttribute('easter_egg_titles', default=[])
 
 
 def configure(config):
@@ -65,7 +66,11 @@ def anitv(bot, trigger):
     if args['title'] == bot.nick:  # Easter egg
         result = {}
         result['title'] = bot.nick
-        result['episode'] = str(random.randint(1, 13))
+        if bot.config.anitv.easter_egg_titles:
+            result['episode'] = random.randint(1, len(bot.config.anitv.easter_egg_titles))
+            result['episode'] = '%s - "%s"' % (str(result['episode']), bot.config.anitv.easter_egg_titles[result['episode'] - 1])
+        else:
+            result['episode'] = str(random.randint(1, 13))
         result['station'] = random.choice([bot.nick + "TV", trigger.sender])
         res = format_result(result)
         bot.say("%s%s is %s on %s." % (res['title'], res['episode'], res['countdown'], res['station']))
