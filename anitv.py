@@ -39,7 +39,7 @@ def setup(bot):
     bot.config.define_section('anitv', AniTVSection)
 
     if not bot.config.anitv.server:
-        raise ConfigurationError("AniTV server must be specified!");
+        raise ConfigurationError("AniTV server must be specified!")
     else:
         server = bot.config.anitv.server
         api_url = server if (server.startswith('http://') or server.startswith('https://')) else 'http://' + server
