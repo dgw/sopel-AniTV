@@ -18,7 +18,6 @@ The AniTV module requires configuration before it will function. The required co
 Known active servers as of September 2017:
 
 * http://tv.yuuki-chan.xyz/ (requires requesting an API key)
-* https://tv.nalapl3.pw/ (requires requesting an API key)
 
 (A default, public server was included with this module previously, but it shut down in October 2016.)
 
